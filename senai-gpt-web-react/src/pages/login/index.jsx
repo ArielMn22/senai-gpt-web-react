@@ -28,7 +28,7 @@ function Login() {
 
             console.log(response);
 
-            let json = await response.json();
+            let json = await response.json(); // Pegue o conteúdo da requisição.
 
             let token = json.accessToken;
 
