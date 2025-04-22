@@ -1,6 +1,6 @@
-import "./login.css";
 import logo from "../../assets/imgs/Chat.png";
 import { useState } from "react";
+import "./login.css";
 
 function Login() {
 
@@ -73,9 +73,9 @@ function Login() {
                 <div className="robo-image">
                 </div>
 
-                <div className="login-container">
+                <div className={"login-container"}>
 
-                    <img className="logo" src={logo} alt="Logo do SenaiGPT." />
+                    <img className="login-logo" src={logo} alt="Logo do SenaiGPT." />
 
                     <h1
                         id="meutitulo"
