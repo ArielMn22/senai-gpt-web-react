@@ -75,7 +75,7 @@ function Login() {
 
                 <div className="login-container">
 
-                    <img className="logo" src={logo} alt="Logo do SenaiGPT." />
+                    <img className="login-logo" src={logo} alt="Logo do SenaiGPT." />
 
                     <h1
                         id="meutitulo"
