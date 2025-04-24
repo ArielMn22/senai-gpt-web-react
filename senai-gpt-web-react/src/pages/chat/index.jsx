@@ -11,15 +11,53 @@ function Chat() {
 
         // Executada toda vez que a tela abre.
         getChats();
-
+        sendMessage("Olá! Quem é você?");
 
     }, []);
+
+    const sendMessage = async (userMessage) => {
+
+        // Configurações do endpoint e chave da API
+        const endpoint = "https://ai-testenpl826117277026.openai.azure.com/";
+        const apiKey = "DCYQGY3kPmZXr0lh7xeCSEOQ5oiy1aMlN1GeEQd5G5cXjuLWorWOJQQJ99BCACYeBjFXJ3w3AAAAACOGol8N";
+        const deploymentId = "gpt-4"; // Nome do deployment no Azure OpenAI
+        const apiVersion = "2024-05-01-preview"; // Verifique a versão na documentação
+
+        // URL para a chamada da API
+        const url = `${endpoint}/openai/deployments/${deploymentId}/chat/completions?api-version=${apiVersion}`;
+
+        // Configurações do corpo da requisição
+        const data = {
+            messages: [{ role: "user", content: userMessage }],
+            max_tokens: 50
+        };
+
+        // Cabeçalhos da requisição
+        const headers = {
+            "Content-Type": "application/json",
+            "api-key": apiKey
+        };
+
+        // Faz a requisição com fetch
+        const response = await fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            const botMessage = result.choices[0].message.content;
+            console.log("Bot message: ", botMessage);
+        }
+
+    }
 
     const getChats = async () => {
         // Arrow Function
         let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
             headers: {
-                "Authorization" : "Bearer " + localStorage.getItem("meuToken")
+                "Authorization": "Bearer " + localStorage.getItem("meuToken")
             }
         });
 
