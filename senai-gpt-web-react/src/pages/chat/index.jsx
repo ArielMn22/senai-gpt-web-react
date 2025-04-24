@@ -44,6 +44,13 @@ function Chat() {
 
     }
 
+    const onLogOutClick = () => {
+
+        localStorage.clear();
+        window.location.href = "/login";
+
+    }
+
     return (
         <>
             <div className="container">
@@ -69,7 +76,7 @@ function Chat() {
                         <button className="btn-chat">Light mode</button>
                         <button className="btn-chat">My account</button>
                         <button className="btn-chat">Updates & FAQ</button>
-                        <button className="btn-chat">Log out</button>
+                        <button className="btn-chat" onClick={() => onLogOutClick()}>Log out</button>
 
                     </div>
 
