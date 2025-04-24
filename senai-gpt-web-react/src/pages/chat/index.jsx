@@ -1,8 +1,48 @@
 import "./chat.css";
 import logo from "../../assets/imgs/Chat.png";
 import example from "../../assets/imgs/example.svg";
+import { useEffect, useState } from "react";
 
 function Chat() {
+
+    const [chats, setChats] = useState([]);
+
+    useEffect(() => {
+
+        // Executada toda vez que a tela abre.
+        getChats();
+
+
+    }, []);
+
+    const getChats = async () => {
+        // Arrow Function
+        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
+            headers: {
+                "Authorization" : "Bearer " + localStorage.getItem("meuToken")
+            }
+        });
+
+        console.log(response);
+
+        if (response.ok == true) {
+
+            let json = await response.json(); // Pegue as informações dos chats.
+
+            setChats(json);
+
+        } else {
+
+            if (response.status == 401) {
+
+                alert("Token inválido. Faça login novamente.");
+                window.location.href = "/login";
+
+            }
+
+        }
+
+    }
 
     return (
         <>
@@ -14,20 +54,12 @@ function Chat() {
 
                         <button className="btn-new-chat">+ New chat</button>
 
-                        <button className="btn-chat">
-                            <img src="../assets/imgs/chat.svg" alt="ícone de chat." />
-                            AI Chat Tool Ethics
-                        </button>
-
-                        <button className="btn-chat">
-                            <img src="../assets/imgs/chat.svg" alt="ícone de chat." />
-                            AI Chat Tool Impact Writing
-                        </button>
-
-                        <button className="btn-chat">
-                            <img src="../assets/imgs/chat.svg" alt="ícone de chat." />
-                            New chat
-                        </button>
+                        {chats.map(chat => (
+                            <button className="btn-chat">
+                                <img src="../assets/imgs/chat.svg" alt="ícone de chat." />
+                                {chat.chatTitle}
+                            </button>
+                        ))}
 
                     </div>
 
