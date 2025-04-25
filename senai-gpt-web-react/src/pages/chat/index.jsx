@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 function Chat() {
 
     const [chats, setChats] = useState([]);
+    const [chatSelecionado, setChatSelecionado] = useState(null);
 
     useEffect(() => {
 
@@ -19,7 +20,7 @@ function Chat() {
         // Arrow Function
         let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
             headers: {
-                "Authorization" : "Bearer " + localStorage.getItem("meuToken")
+                "Authorization": "Bearer " + localStorage.getItem("meuToken")
             }
         });
 
@@ -36,6 +37,7 @@ function Chat() {
             if (response.status == 401) {
 
                 alert("Token inválido. Faça login novamente.");
+                localStorage.clear();
                 window.location.href = "/login";
 
             }
@@ -51,6 +53,13 @@ function Chat() {
 
     }
 
+    const clickChat = (chat) => {
+
+        setChatSelecionado(chat);
+        console.log(chat);
+
+    }
+
     return (
         <>
             <div className="container">
@@ -62,7 +71,7 @@ function Chat() {
                         <button className="btn-new-chat">+ New chat</button>
 
                         {chats.map(chat => (
-                            <button className="btn-chat">
+                            <button className="btn-chat" onClick={() => clickChat(chat)}>
                                 <img src="../assets/imgs/chat.svg" alt="ícone de chat." />
                                 {chat.chatTitle}
                             </button>
@@ -84,54 +93,62 @@ function Chat() {
 
                 <main className="central-panel">
 
-                    <div className="chat-logo">
-                        <img src={logo} alt="Logo do SenaiGPT." />
-                    </div>
+                    {chatSelecionado == null && (
 
-                    <div className="dicas-container">
+                        <>
 
-                        <div className="dicas-item">
+                            <div className="chat-logo">
+                                <img src={logo} alt="Logo do SenaiGPT." />
+                            </div>
 
-                            <h2>
-                                <img src={example} alt="Example icon." />
-                                Examples
-                            </h2>
+                            <div className="dicas-container">
 
-                            <p>Explique como um computador quântico funciona.</p>
-                            <p>Explique como um computador quântico funciona.</p>
-                            <p>Explique como um computador quântico funciona.</p>
+                                <div className="dicas-item">
 
-                        </div>
+                                    <h2>
+                                        <img src={example} alt="Example icon." />
+                                        Examples
+                                    </h2>
 
-                        <div className="dicas-item">
+                                    <p>Explique como um computador quântico funciona.</p>
+                                    <p>Explique como um computador quântico funciona.</p>
+                                    <p>Explique como um computador quântico funciona.</p>
 
-                            <h2>
-                                <img src={example} alt="Example icon." />
-                                Examples
-                            </h2>
+                                </div>
 
-                            <p>Explique como um computador quântico funciona.</p>
-                            <p>Explique como um computador quântico funciona.</p>
-                            <p>Explique como um computador quântico funciona.</p>
+                                <div className="dicas-item">
 
-                        </div>
+                                    <h2>
+                                        <img src={example} alt="Example icon." />
+                                        Examples
+                                    </h2>
 
-                        <div className="dicas-item">
+                                    <p>Explique como um computador quântico funciona.</p>
+                                    <p>Explique como um computador quântico funciona.</p>
+                                    <p>Explique como um computador quântico funciona.</p>
 
-                            <h2>
-                                <img src={example} alt="Example icon." />
-                                Examples
-                            </h2>
+                                </div>
 
-                            <p>Explique como um computador quântico funciona.</p>
-                            <p>Explique como um computador quântico funciona.</p>
-                            <p>Explique como um computador quântico funciona.</p>
+                                <div className="dicas-item">
 
-                        </div>
+                                    <h2>
+                                        <img src={example} alt="Example icon." />
+                                        Examples
+                                    </h2>
 
-                    </div>
+                                    <p>Explique como um computador quântico funciona.</p>
+                                    <p>Explique como um computador quântico funciona.</p>
+                                    <p>Explique como um computador quântico funciona.</p>
 
-                    <div className="input-container-1">
+                                </div>
+
+                            </div>
+
+                        </>
+
+                    )}
+
+'                    <div className="input-container-1">
 
                         <img src="../assets/imgs/mic.svg" alt="Microphone." />
                         <img src="../assets/imgs/img.svg" alt="Image." />
@@ -140,7 +157,7 @@ function Chat() {
 
                         <img src="../assets/imgs/send.svg" alt="Send." />
 
-                    </div>
+                    </div>'
 
                 </main>
 
