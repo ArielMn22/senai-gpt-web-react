@@ -162,6 +162,10 @@ function Chat() {
 
                                 <div className="chat-messages">
 
+                                    {chatSelecionado.messages.map(message => (
+                                        <p className={"message-item " + (message.userId == "chatbot"? "chatbot" : "")}>{message.text}</p>
+                                    ))}
+
                                 </div>
 
                             </div>
