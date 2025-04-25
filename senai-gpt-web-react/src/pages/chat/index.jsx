@@ -148,7 +148,29 @@ function Chat() {
 
                     )}
 
-'                    <div className="input-container-1">
+                    {chatSelecionado != null && (
+
+                        <>
+
+                            <div className="chat-container">
+
+                                <div className="chat-header">
+
+                                    <h2>{chatSelecionado.chatTitle}</h2>
+
+                                </div>
+
+                                <div className="chat-messages">
+
+                                </div>
+
+                            </div>
+
+                        </>
+
+                    )}
+
+                    <div className="input-container-1">
 
                         <img src="../assets/imgs/mic.svg" alt="Microphone." />
                         <img src="../assets/imgs/img.svg" alt="Image." />
@@ -157,7 +179,7 @@ function Chat() {
 
                         <img src="../assets/imgs/send.svg" alt="Send." />
 
-                    </div>'
+                    </div>
 
                 </main>
 
