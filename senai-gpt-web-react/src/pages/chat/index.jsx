@@ -1,12 +1,15 @@
 import "./chat.css";
 import logo from "../../assets/imgs/Chat.png";
 import example from "../../assets/imgs/example.svg";
+import sendIcon from "../../assets/imgs/send.svg";
 import { useEffect, useState } from "react";
 
 function Chat() {
 
     const [chats, setChats] = useState([]);
     const [chatSelecionado, setChatSelecionado] = useState(null);
+
+    const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
 
@@ -57,6 +60,71 @@ function Chat() {
 
         setChatSelecionado(chat);
         console.log(chat);
+
+    }
+
+    const chatGPT = async (message) => {
+
+        // Configurações do endpoint e chave da API
+        const endpoint = "https://ai-testenpl826117277026.openai.azure.com/";
+        const apiKey = "";
+        const deploymentId = "gpt-4"; // Nome do deployment no Azure OpenAI
+        const apiVersion = "2024-05-01-preview"; // Verifique a versão na documentação
+
+        // URL para a chamada da API
+        const url = `${endpoint}/openai/deployments/${deploymentId}/chat/completions?api-version=${apiVersion}`;
+
+        // Configurações do corpo da requisição
+        const data = {
+            messages: [{ role: "user", content: message }],
+            max_tokens: 50
+        };
+
+        // Cabeçalhos da requisição
+        const headers = {
+            "Content-Type": "application/json",
+            "api-key": apiKey
+        };
+
+        // Faz a requisição com fetch
+        const response = await fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            const botMessage = result.choices[0].message.content;
+            return botMessage;
+        }
+
+    }
+
+    const enviarMensagem = async (message) => {
+
+        let resposta = await chatGPT(message);
+
+        console.log("Resposta: ", resposta);
+
+        let novaMensagemUsuario = {
+            userId: "userId",
+            text: message,
+            id: 10
+        };
+
+        let novaRespostaChatGPT = {
+            userId: "chatbot",
+            text: resposta,
+            id: 10
+        };
+
+        let novoChatSelecionado = { ...chatSelecionado }; // Cópia do chatSelecionado.
+
+        novoChatSelecionado.messages.push(novaMensagemUsuario); // Adicionando uma mensagem.
+        novoChatSelecionado.messages.push(novaRespostaChatGPT); // Adicionando uma mensagem.
+
+        setChatSelecionado(novoChatSelecionado);
 
     }
 
@@ -163,7 +231,7 @@ function Chat() {
                                 <div className="chat-messages">
 
                                     {chatSelecionado.messages.map(message => (
-                                        <p className={"message-item " + (message.userId == "chatbot"? "chatbot" : "")}>{message.text}</p>
+                                        <p className={"message-item " + (message.userId == "chatbot" ? "chatbot" : "")}>{message.text}</p>
                                     ))}
 
                                 </div>
@@ -179,9 +247,13 @@ function Chat() {
                         <img src="../assets/imgs/mic.svg" alt="Microphone." />
                         <img src="../assets/imgs/img.svg" alt="Image." />
 
-                        <input placeholder="Type a message." type="text" />
+                        <input
+                            value={userMessage}
+                            onChange={event => setUserMessage(event.target.value)} placeholder="Type a message."
+                            type="text"
+                        />
 
-                        <img src="../assets/imgs/send.svg" alt="Send." />
+                        <img onClick={() => enviarMensagem(userMessage)} src={sendIcon} alt="Send." />
 
                     </div>
 
