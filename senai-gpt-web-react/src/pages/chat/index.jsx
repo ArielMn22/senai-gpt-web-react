@@ -19,7 +19,7 @@ function Chat() {
 
         // Configurações do endpoint e chave da API
         const endpoint = "https://ai-testenpl826117277026.openai.azure.com/";
-         const apiKey = "DCYQGY3kPmZXr0lh7xeCSEOQ5oiy1aMlN1GeEQd5G5cXjuLWorWOJQQJ99BCACYeBjFXJ3w3AAAAACOGol8N";
+        const apiKey = "DCYQGY3kPmZXr0lh7xeCSEOQ5oiy1aMlN1GeEQd5G5cXjuLWorWOJQQJ99BCACYeBjFXJ3w3AAAAACOGol8N";
         const deploymentId = "gpt-4"; // Nome do deployment no Azure OpenAI
         const apiVersion = "2024-05-01-preview"; // Verifique a versão na documentação
 
