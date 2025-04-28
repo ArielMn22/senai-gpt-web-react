@@ -70,7 +70,7 @@ function Chat() {
 
         // Configurações do endpoint e chave da API
         const endpoint = "https://ai-testenpl826117277026.openai.azure.com/";
-        const apiKey = "DCYQGY3kPmZXr0lh7xeCSEOQ5oiy1aMlN1GeEQd5G5cXjuLWorWOJQQJ99BCACYeBjFXJ3w3AAAAACOGol8N";
+        const apiKey = "-";
         const deploymentId = "gpt-4"; // Nome do deployment no Azure OpenAI
         const apiVersion = "2024-05-01-preview"; // Verifique a versão na documentação
 
@@ -106,95 +106,7 @@ function Chat() {
 
     const enviarMensagem = async (message) => {
         
-        let userId = localStorage.getItem("meuId"); // Pega o ID do usuário logado.
-
-        // Cria o objeto da nova mensagem do usuário.
-        let novaMensagemUsuario = {
-            userId: crypto.randomUUID(),
-            text: message,
-            id: userId
-        };
-
-        // Atualiza o chat selecionado com a nova mensagem.
-        // O operador spread (...) cria uma cópia do objeto chatSelecionado.
-        let novoChatSelecionado = { ...chatSelecionado }; // Cópia do chatSelecionado.
-        novoChatSelecionado.messages.push(novaMensagemUsuario); // Adiciona a mensagem do usuário.
-        setChatSelecionado(novoChatSelecionado); // Atualiza o chat selecionado.
-
-        // Faz a chamada para o ChatGPT e espera pela resposta.
-        let resposta = await chatGPT(message);
-
-        // Cria o objeto da nova resposta do ChatGPT.
-        let novaRespostaChatGPT = {
-            userId: "chatbot",
-            text: resposta,
-            id: crypto.randomUUID()
-        };
-
-        // Adiciona a nova resposta do ChatGPT ao chat selecionado.
-        novoChatSelecionado.messages.push(novaRespostaChatGPT); // Adiciona a resposta do ChatGPT.
-        setChatSelecionado({ ...novoChatSelecionado }); // Atualiza o chat selecionado.
-
-        // Salva o chat no banco de dados.
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats/" + chatSelecionado.id, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("meuToken")
-            },
-            body: JSON.stringify(novoChatSelecionado)
-        });
-
-        if (response.ok == true) {
-            console.log("Chat atualizado com sucesso.");
-        } else {
-            console.log("Erro ao atualizar o chat.");
-        }
-
-        setUserMessage(""); // Limpa a mensagem do usuário.
-
-        // Atualiza a lista de chats.
-        await getChats();
-
-    }
-
-    const novoChat = async () => {
-
-        let nomeChat = prompt("Digite o nome do novo chat:"); // Pede o nome do novo chat.
-
-        // if (nomeChat == null || nomeChat == "") {
-        //     alert("Nome inválido.");
-        //     return;
-        // }
-
-        let userId = localStorage.getItem("meuId"); // Pega o ID do usuário logado.
-
-        // Cria o objeto do novo chat.
-        let novoChat = {
-            id: crypto.randomUUID(),
-            chatTitle: nomeChat,
-            messages: [],
-            userId: userId
-        };
-
-        setChatSelecionado(novoChat); // Atualiza o chat selecionado.
-        setUserMessage(""); // Limpa a mensagem do usuário.
-
-        // Faz a requisição para criar um novo chat.
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("meuToken")
-            },
-            body: JSON.stringify(novoChat)
-        });
-
-        if (response.ok == true) {
-            await getChats(); // Atualiza a lista de chats.
-        } else {
-            console.log("Erro ao criar o chat.");
-        }
+        // Mostrar chat na tela.
 
     }
 
@@ -206,7 +118,7 @@ function Chat() {
 
                     <div className="top">
 
-                        <button className="btn-new-chat" onClick={() => novoChat()}>+ New chat</button>
+                        <button className="btn-new-chat">+ New chat</button>
 
                         {chats.map(chat => (
                             <button className="btn-chat" onClick={() => clickChat(chat)}>
