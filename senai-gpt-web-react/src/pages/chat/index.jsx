@@ -151,6 +151,51 @@ function Chat() {
             console.log("Erro ao atualizar o chat.");
         }
 
+        setUserMessage(""); // Limpa a mensagem do usuário.
+
+        // Atualiza a lista de chats.
+        await getChats();
+
+    }
+
+    const novoChat = async () => {
+
+        let nomeChat = prompt("Digite o nome do novo chat:"); // Pede o nome do novo chat.
+
+        // if (nomeChat == null || nomeChat == "") {
+        //     alert("Nome inválido.");
+        //     return;
+        // }
+
+        let userId = localStorage.getItem("meuId"); // Pega o ID do usuário logado.
+
+        // Cria o objeto do novo chat.
+        let novoChat = {
+            id: crypto.randomUUID(),
+            chatTitle: nomeChat,
+            messages: [],
+            userId: userId
+        };
+
+        setChatSelecionado(novoChat); // Atualiza o chat selecionado.
+        setUserMessage(""); // Limpa a mensagem do usuário.
+
+        // Faz a requisição para criar um novo chat.
+        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("meuToken")
+            },
+            body: JSON.stringify(novoChat)
+        });
+
+        if (response.ok == true) {
+            await getChats(); // Atualiza a lista de chats.
+        } else {
+            console.log("Erro ao criar o chat.");
+        }
+
     }
 
     return (
@@ -161,7 +206,7 @@ function Chat() {
 
                     <div className="top">
 
-                        <button className="btn-new-chat">+ New chat</button>
+                        <button className="btn-new-chat" onClick={() => novoChat()}>+ New chat</button>
 
                         {chats.map(chat => (
                             <button className="btn-chat" onClick={() => clickChat(chat)}>
