@@ -1,7 +1,10 @@
 import "./chat.css";
 import logo from "../../assets/imgs/Chat.png";
 import example from "../../assets/imgs/example.svg";
+import chatIcon from "../../assets/imgs/chat.svg";
 import sendIcon from "../../assets/imgs/send.svg";
+import micIcon from "../../assets/imgs/mic.svg";
+import imageIcon from "../../assets/imgs/img.svg";
 import { useEffect, useState } from "react";
 
 function Chat() {
@@ -67,7 +70,7 @@ function Chat() {
 
         // Configurações do endpoint e chave da API
         const endpoint = "https://ai-testenpl826117277026.openai.azure.com/";
-        const apiKey = "";
+        const apiKey = "DCYQGY3kPmZXr0lh7xeCSEOQ5oiy1aMlN1GeEQd5G5cXjuLWorWOJQQJ99BCACYeBjFXJ3w3AAAAACOGol8N";
         const deploymentId = "gpt-4"; // Nome do deployment no Azure OpenAI
         const apiVersion = "2024-05-01-preview"; // Verifique a versão na documentação
 
@@ -102,29 +105,45 @@ function Chat() {
     }
 
     const enviarMensagem = async (message) => {
-
-        let resposta = await chatGPT(message);
-
-        console.log("Resposta: ", resposta);
+        
+        let userId = localStorage.getItem("meuId");
 
         let novaMensagemUsuario = {
-            userId: "userId",
+            userId: crypto.randomUUID(),
             text: message,
-            id: 10
+            id: userId
         };
+
+        let novoChatSelecionado = { ...chatSelecionado }; // Cópia do chatSelecionado.
+        novoChatSelecionado.messages.push(novaMensagemUsuario); // Adiciona a mensagem do usuário.
+        setChatSelecionado(novoChatSelecionado); // Atualiza o chat selecionado.
+
+        let resposta = await chatGPT(message);
 
         let novaRespostaChatGPT = {
             userId: "chatbot",
             text: resposta,
-            id: 10
+            id: crypto.randomUUID()
         };
 
-        let novoChatSelecionado = { ...chatSelecionado }; // Cópia do chatSelecionado.
+        novoChatSelecionado.messages.push(novaRespostaChatGPT); // Adiciona a resposta do ChatGPT.
+        setChatSelecionado({ ...novoChatSelecionado }); // Atualiza o chat selecionado.
 
-        novoChatSelecionado.messages.push(novaMensagemUsuario); // Adicionando uma mensagem.
-        novoChatSelecionado.messages.push(novaRespostaChatGPT); // Adicionando uma mensagem.
+        // salvar o chat no banco de dados
+        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats/" + chatSelecionado.id, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("meuToken")
+            },
+            body: JSON.stringify(novoChatSelecionado)
+        });
 
-        setChatSelecionado(novoChatSelecionado);
+        if (response.ok == true) {
+            console.log("Chat atualizado com sucesso.");
+        } else {
+            console.log("Erro ao atualizar o chat.");
+        }
 
     }
 
@@ -140,7 +159,7 @@ function Chat() {
 
                         {chats.map(chat => (
                             <button className="btn-chat" onClick={() => clickChat(chat)}>
-                                <img src="../assets/imgs/chat.svg" alt="ícone de chat." />
+                                <img src={chatIcon} alt="ícone de chat." />
                                 {chat.chatTitle}
                             </button>
                         ))}
@@ -244,8 +263,8 @@ function Chat() {
 
                     <div className="input-container-1">
 
-                        <img src="../assets/imgs/mic.svg" alt="Microphone." />
-                        <img src="../assets/imgs/img.svg" alt="Image." />
+                        <img src={micIcon} alt="Microphone." />
+                        <img src={imageIcon} alt="Image." />
 
                         <input
                             value={userMessage}

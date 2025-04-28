@@ -31,11 +31,13 @@ function Login() {
             let json = await response.json(); // Pegue o conteúdo da requisição.
 
             let token = json.accessToken;
+            let userId = json.user.id;
 
             console.log("Token: " + token);
 
             // LOCALSTORAGE
             localStorage.setItem("meuToken", token);
+            localStorage.setItem("meuId", userId);
 
             // COOKIES
             // function setCookie(name, value, days) {
