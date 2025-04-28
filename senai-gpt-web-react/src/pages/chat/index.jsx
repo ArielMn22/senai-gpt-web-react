@@ -106,30 +106,36 @@ function Chat() {
 
     const enviarMensagem = async (message) => {
         
-        let userId = localStorage.getItem("meuId");
+        let userId = localStorage.getItem("meuId"); // Pega o ID do usuário logado.
 
+        // Cria o objeto da nova mensagem do usuário.
         let novaMensagemUsuario = {
             userId: crypto.randomUUID(),
             text: message,
             id: userId
         };
 
+        // Atualiza o chat selecionado com a nova mensagem.
+        // O operador spread (...) cria uma cópia do objeto chatSelecionado.
         let novoChatSelecionado = { ...chatSelecionado }; // Cópia do chatSelecionado.
         novoChatSelecionado.messages.push(novaMensagemUsuario); // Adiciona a mensagem do usuário.
         setChatSelecionado(novoChatSelecionado); // Atualiza o chat selecionado.
 
+        // Faz a chamada para o ChatGPT e espera pela resposta.
         let resposta = await chatGPT(message);
 
+        // Cria o objeto da nova resposta do ChatGPT.
         let novaRespostaChatGPT = {
             userId: "chatbot",
             text: resposta,
             id: crypto.randomUUID()
         };
 
+        // Adiciona a nova resposta do ChatGPT ao chat selecionado.
         novoChatSelecionado.messages.push(novaRespostaChatGPT); // Adiciona a resposta do ChatGPT.
         setChatSelecionado({ ...novoChatSelecionado }); // Atualiza o chat selecionado.
 
-        // salvar o chat no banco de dados
+        // Salva o chat no banco de dados.
         let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats/" + chatSelecionado.id, {
             method: "PUT",
             headers: {
