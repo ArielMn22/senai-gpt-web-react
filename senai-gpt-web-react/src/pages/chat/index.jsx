@@ -52,6 +52,9 @@ function Chat() {
     }
 
     const chatGPT = async (message) => {
+
+        return "[Mensagem fixa]";
+
         const endpoint = "https://ai-testenpl826117277026.openai.azure.com/";
         const apiKey = "DCYQGY3kPmZXr0lh7xeCSEOQ5oiy1aMlN1GeEQd5G5cXjuLWorWOJQQJ99BCACYeBjFXJ3w3AAAAACOGol8N";
         const deploymentId = "gpt-4";
