@@ -14,9 +14,20 @@ function Chat() {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
+
+        let rascunhoMensagem = localStorage.getItem("rascunhoMensagem");
+
+        if (rascunhoMensagem) {
+            setUserMessage(rascunhoMensagem);
+        }
+
         // Executada toda vez que a tela abre.
         getChats();
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem("rascunhoMensagem", userMessage);
+    }, [userMessage]);
 
     const getChats = async () => {
         let response = await fetch("https://senai-gpt-api.up.railway.app/chats", {
