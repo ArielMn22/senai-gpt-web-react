@@ -26,8 +26,15 @@ function Chat() {
         });
 
         if (response.ok) {
+
             let json = await response.json(); // Pegue as informações dos chats.
+           
+            let userId = localStorage.getItem("meuId");
+
+            json = json.filter(chat => chat.userId == userId);
+
             setChats(json);
+            
         } else if (response.status === 401) {
             alert("Token inválido. Faça login novamente.");
             localStorage.clear();
