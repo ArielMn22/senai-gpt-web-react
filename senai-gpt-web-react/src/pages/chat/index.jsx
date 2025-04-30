@@ -24,7 +24,7 @@ function Chat() {
 
     const getChats = async () => {
         // Arrow Function
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
+        let response = await fetch("https://senai-gpt-api.up.railway.app/chats", {
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("meuToken")
             }
@@ -137,7 +137,7 @@ function Chat() {
 
         console.log("resposta", respostaGPT);
 
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats/" + chatSelecionado.id, {
+        let response = await fetch("https://senai-gpt-api.up.railway.app/chats/" + chatSelecionado.id, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("meuToken"),
@@ -156,6 +156,49 @@ function Chat() {
 
     }
 
+    const novoChat = async () => {
+
+        let novoTitulo = prompt("Insira o título do chat:");
+
+        if (novoTitulo == null || novoTitulo == "") { // se titulo for nulo ou vazio.
+            
+            alert("Insira um título.");
+            return; // Faz o código parar de ser executado.
+        
+        }
+
+        // Pega o ID do usuário logado
+        let userId = localStorage.getItem("meuId");
+
+        let nChat = {
+
+            chatTitle: novoTitulo,
+            id: crypto.randomUUID(),
+            userId: userId,
+            messages: []
+
+        }
+
+        let response = await fetch("https://senai-gpt-api.up.railway.app/chats", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("meuToken"),
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify(
+                nChat
+            )
+        });
+
+        if (response.ok) {
+
+            // Atualiza os chats na tela.
+            await getChats();
+
+        }
+
+    }
+
     return (
         <>
             <div className="container">
@@ -164,7 +207,7 @@ function Chat() {
 
                     <div className="top">
 
-                        <button className="btn-new-chat">+ New chat</button>
+                        <button className="btn-new-chat" onClick={() => novoChat()}>+ New chat</button>
 
                         {chats.map(chat => (
                             <button className="btn-chat" onClick={() => clickChat(chat)}>
