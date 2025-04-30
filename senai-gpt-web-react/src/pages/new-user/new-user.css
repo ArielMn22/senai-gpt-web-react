@@ -42,12 +42,12 @@ h1 {
 
 }
 
-.robo-image {
+.up-image {
 
-    background-image: url("../../assets/imgs/Rectangle 1.png");
-    background-size: cover;
+    background-image: url(/src/assets/imgs/up.jpg);
+    background-size: 175%;
+    background-position: 0% 81%;
     /* background-repeat: no-repeat; */
-
     width: 50vw;
     height: 100vh;
 

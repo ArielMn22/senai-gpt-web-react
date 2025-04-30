@@ -36,7 +36,7 @@ function NewUser() {
             return;
         }
 
-        let response = await fetch ("https://senai-gpt-api.azurewebsites.net/users", {
+        let response = await fetch ("https://senai-gpt-api.up.railway.app/users", {
 
             headers: {
                 "Content-Type": "application/json"
@@ -70,7 +70,7 @@ function NewUser() {
 
             <main className="page-container">
 
-                <div className="robo-image">
+                <div className="up-image">
                 </div>
 
                 <div className="new-user-container">
@@ -88,6 +88,8 @@ function NewUser() {
                     <input className="inpt" value={confirmPassword} onChange={event => setConfirmPassword(event.target.value)} type="password" placeholder="Insira a senha" />
 
                     <button className="btn" onClick={() => onNewUserClick()}>Entrar</button>
+
+                    <a className="form-hint" href="/login">Clique aqui para fazer o login</a>
 
                 </div>
 

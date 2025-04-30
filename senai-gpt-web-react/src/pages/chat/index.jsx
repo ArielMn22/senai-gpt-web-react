@@ -19,7 +19,7 @@ function Chat() {
     }, []);
 
     const getChats = async () => {
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
+        let response = await fetch("https://senai-gpt-api.up.railway.app/chats", {
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("meuToken")
             }
@@ -108,7 +108,7 @@ function Chat() {
 
         // Salva o chat atualizado no back-end
         let response = await fetch(
-            `https://senai-gpt-api.azurewebsites.net/chats/${chatAtual.id}`,
+            `https://senai-gpt-api.up.railway.app/chats/${chatAtual.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -147,7 +147,7 @@ function Chat() {
         setChatSelecionado(novoChatObj);
         setUserMessage("");
 
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
+        let response = await fetch("https://senai-gpt-api.up.railway.app/chats", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

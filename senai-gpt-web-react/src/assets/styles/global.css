@@ -36,3 +36,10 @@ button {
     cursor: pointer;
 
 }
+
+.form-hint {
+
+    margin-top: 20px;
+    color: black;
+
+}
