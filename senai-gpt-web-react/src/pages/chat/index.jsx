@@ -174,6 +174,28 @@ function Chat() {
         }
     }
 
+    const deletarChat = async () => {
+
+        let confirmacao = window.confirm("Você tem certeza que deseja deletar este chat?");
+
+        if (confirmacao) {
+            let response = await fetch(`https://senai-gpt-api.up.railway.app/chats/${chatSelecionado.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("meuToken")
+                }
+            });
+
+            if (response.ok) {
+                setChatSelecionado(null);
+                await getChats();
+            } else {
+                alert("Erro ao deletar o chat.");
+            }
+        }
+
+    }
+
     return (
         <>
             <div className="container">
@@ -188,7 +210,9 @@ function Chat() {
                         ))}
                     </div>
                     <div className="bottom">
-                        <button className="btn-chat">Clear conversations</button>
+                        {chatSelecionado != null && (
+                            <button className="btn-chat" onClick={() => deletarChat()}>Delete current chat</button>
+                        )}
                         <button className="btn-chat">Light mode</button>
                         <button className="btn-chat">My account</button>
                         <button className="btn-chat">Updates & FAQ</button>
@@ -208,9 +232,9 @@ function Chat() {
                                             <img src={example} alt="Example icon." />
                                             Examples
                                         </h2>
-                                        <p>Explique como um computador quântico funciona.</p>
-                                        <p>Explique como um computador quântico funciona.</p>
-                                        <p>Explique como um computador quântico funciona.</p>
+                                        <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>Explique como um computador quântico funciona.</p>
+                                        <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>Explique como um computador quântico funciona.</p>
+                                        <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>Explique como um computador quântico funciona.</p>
                                     </div>
                                 ))}
                             </div>
