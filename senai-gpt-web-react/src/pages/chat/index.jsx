@@ -161,7 +161,7 @@ function Chat() {
             return;
         }
 
-        toggleLeftPanel();
+        setIsLeftPanelOpen(false);;
 
         let userId = localStorage.getItem("meuId");
         let novoChatObj = {
