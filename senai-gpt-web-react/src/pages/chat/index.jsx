@@ -13,6 +13,8 @@ function Chat() {
     const [chatSelecionado, setChatSelecionado] = useState(null);
     const [userMessage, setUserMessage] = useState("");
 
+    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false);
+
     useEffect(() => {
 
         let rascunhoMensagem = localStorage.getItem("rascunhoMensagem");
@@ -60,6 +62,7 @@ function Chat() {
 
     const clickChat = (chat) => {
         setChatSelecionado(chat);
+        toggleLeftPanel();
     }
 
     const chatGPT = async (message) => {
@@ -151,11 +154,14 @@ function Chat() {
     }
 
     const novoChat = async () => {
+
         let nomeChat = prompt("Digite o nome do novo chat:");
         if (!nomeChat) {
             alert("Nome inválido.");
             return;
         }
+
+        toggleLeftPanel();
 
         let userId = localStorage.getItem("meuId");
         let novoChatObj = {
@@ -189,6 +195,8 @@ function Chat() {
 
         let confirmacao = window.confirm("Você tem certeza que deseja deletar este chat?");
 
+        toggleLeftPanel();
+
         if (confirmacao) {
             let response = await fetch(`https://senai-gpt-api.up.railway.app/chats/${chatSelecionado.id}`, {
                 method: "DELETE",
@@ -207,10 +215,23 @@ function Chat() {
 
     }
 
+    const toggleLeftPanel = () => {
+        setIsLeftPanelOpen(!isLeftPanelOpen);
+    }
+
     return (
         <>
             <div className="container">
-                <header className="left-panel">
+                {/* Toggle Button */}
+                <button
+                    className="btn-toggle-panel"
+                    onClick={toggleLeftPanel}
+                >
+                    ☰
+                </button>
+                <header className={`left-panel ${
+          isLeftPanelOpen ? "open" : ""
+        }`}>
                     <div className="top">
                         <button className="btn-new-chat" onClick={() => novoChat()}>+ New chat</button>
                         {chats.map(chat => (
