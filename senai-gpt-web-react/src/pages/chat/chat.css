@@ -278,6 +278,8 @@
         border: 1px solid black;
         z-index: 3;
         font-size: 1.5em;
+        color: black;
+        cursor: pointer;
 
     }
 
