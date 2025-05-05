@@ -52,3 +52,35 @@ h1 {
     height: 100vh;
 
 }
+
+@media screen and (max-width: 1366px) {
+
+    /* Desktop Pequeno */
+
+} 
+
+@media screen and (max-width: 1000px) {
+
+    /* Tablet */
+
+} 
+
+@media screen and (max-width: 768px) {
+
+    /* Celular */
+
+    .robo-image {
+
+        display: none;
+
+    }
+
+    .login-container {
+
+        width: 100vw;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../../assets/imgs/Rectangle 1.png");
+        background-size: cover;
+
+    }
+
+} 
