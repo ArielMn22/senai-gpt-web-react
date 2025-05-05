@@ -273,12 +273,16 @@
         background-color: #F7F9FB;
         border-radius: 100px;
         position: fixed;
-        bottom: 45px;
+        bottom: 120px;
         right: 20px;        
         border: 1px solid black;
         z-index: 3;
         font-size: 1.5em;
 
+    }
+
+    .input-container-1 input {
+        width: 80vw;
     }
     
 }

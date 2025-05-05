@@ -242,11 +242,11 @@ function Chat() {
                     </div>
                     <div className="bottom">
                         {chatSelecionado != null && (
-                            <button className="btn-chat" onClick={() => deletarChat()}>Delete current chat</button>
+                            <button className="btn-chat" onClick={() => deletarChat()}>Delete current chat: {chatSelecionado.chatTitle}</button>
                         )}
-                        <button className="btn-chat">Light mode</button>
-                        <button className="btn-chat">My account</button>
-                        <button className="btn-chat">Updates & FAQ</button>
+                        {/* <button className="btn-chat">Light mode</button> */}
+                        {/* <button className="btn-chat">My account</button> */}
+                        {/* <button className="btn-chat">Updates & FAQ</button> */}
                         <button className="btn-chat" onClick={onLogOutClick}>Log out</button>
                     </div>
                 </header>
@@ -285,8 +285,8 @@ function Chat() {
                         </>
                     )}
                     <div className="input-container-1">
-                        <img src={micIcon} alt="Microphone." />
-                        <img src={imageIcon} alt="Image." />
+                        {/* <img src={micIcon} alt="Microphone." />
+                        <img src={imageIcon} alt="Image." /> */}
                         <input
                             value={userMessage}
                             onChange={event => setUserMessage(event.target.value)}
