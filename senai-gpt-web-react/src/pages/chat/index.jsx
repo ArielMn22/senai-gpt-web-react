@@ -41,13 +41,13 @@ function Chat() {
         if (response.ok) {
 
             let json = await response.json(); // Pegue as informações dos chats.
-           
+
             let userId = localStorage.getItem("meuId");
 
             json = json.filter(chat => chat.userId == userId);
 
             setChats(json);
-            
+
         } else if (response.status === 401) {
             alert("Token inválido. Faça login novamente.");
             localStorage.clear();
@@ -229,9 +229,8 @@ function Chat() {
                 >
                     ☰
                 </button>
-                <header className={`left-panel ${
-          isLeftPanelOpen ? "open" : ""
-        }`}>
+                <header className={`left-panel ${isLeftPanelOpen ? "open" : ""
+                    }`}>
                     <div className="top">
                         <button className="btn-new-chat" onClick={() => novoChat()}>+ New chat</button>
                         {chats.map(chat => (
