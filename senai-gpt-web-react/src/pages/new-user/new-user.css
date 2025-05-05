@@ -52,15 +52,3 @@ h1 {
     height: 100vh;
 
 }
-
-@media screen and (max-width: 768px) {
-    
-    .new-user-container {
-        width: 100vw;
-    }
-
-    .up-image {
-        display: none;
-    }
-    
-}
