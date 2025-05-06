@@ -225,12 +225,11 @@ function Chat() {
                 {/* Toggle Button */}
                 <button
                     className="btn-toggle-panel"
-                    onClick={toggleLeftPanel}
+                    onClick={() => setIsLeftPanelOpen(true)}
                 >
                     ☰
                 </button>
-                <header className={`left-panel ${isLeftPanelOpen ? "open" : ""
-                    }`}>
+                <header className={`left-panel ${isLeftPanelOpen == true ? "open" : ""}`}>
                     <div className="top">
                         <button className="btn-new-chat" onClick={() => novoChat()}>+ New chat</button>
                         {chats.map(chat => (
