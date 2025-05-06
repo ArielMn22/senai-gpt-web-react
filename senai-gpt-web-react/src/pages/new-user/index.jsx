@@ -13,7 +13,7 @@ function NewUser() {
 
         if (name == "") {
             alert("Preencha o nome do usuário.");
-            return;
+            return; // Para a execução da função.
         }
 
         if (email == "") {
