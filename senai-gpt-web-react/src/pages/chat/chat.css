@@ -218,7 +218,61 @@
 
 .btn-toggle-panel {
 
-    /* display: none; */
+    display: none;
+
+}
+
+/* Darkmode */
+body.dark-mode .left-panel {
+
+    background-color: #000 !important;
+    color: white !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+}
+
+body.dark-mode .btn-chat {
+
+    background-color: #000 !important;
+    color: white !important;
+
+}
+
+body.dark-mode .btn-new-chat {
+
+    background-color: #C6C7F8 !important;
+    color: black !important;
+
+}
+
+body.dark-mode .bottom {
+
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+}
+
+body.dark-mode .central-panel {
+
+    background-color: #000 !important;
+
+}
+
+body.dark-mode .central-panel .dicas-item h2 {
+
+    color: white !important;
+
+}
+
+body.dark-mode .central-panel .dicas-item p {
+
+    background-color: #282828 !important;
+    color: white !important;
+
+}
+
+body.dark-mode .input-container-1 {
+
+    background-color: #282828 !important;
 
 }
 
@@ -226,12 +280,14 @@
 
     /* Celular */
     .left-panel {
+        /* Menu Fechado */
 
         display: none;
 
     }
 
     .left-panel.open {
+        /* Menu Aberto */
 
         display: block;
 
@@ -251,6 +307,8 @@
 
     .btn-toggle-panel {
 
+        display: block;
+
         z-index: 2;
 
         width: 50px;
@@ -267,6 +325,24 @@
         font-size: 25px;
 
         background-color: white;
+
+    }
+
+    .chat-logo img {
+
+        width: 70vw;
+
+    }
+
+    .central-panel .dicas-container {
+
+        max-width: 90vw;
+
+    }
+
+    .input-container-1 input {
+
+        width: 80vw;
 
     }
 

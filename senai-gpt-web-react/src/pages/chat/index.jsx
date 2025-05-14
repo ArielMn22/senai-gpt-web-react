@@ -1,10 +1,12 @@
 import "./chat.css";
 import logo from "../../assets/imgs/Chat.png";
+import logoWhite from "../../assets/imgs/ChatWhite.png";
 import example from "../../assets/imgs/example.svg";
+import exampleWhite from "../../assets/imgs/example-white.svg";
 import chatIcon from "../../assets/imgs/chat.svg";
+import chatIconWhite from "../../assets/imgs/chat-white.svg";
 import sendIcon from "../../assets/imgs/send.svg";
-import micIcon from "../../assets/imgs/mic.svg";
-import imageIcon from "../../assets/imgs/img.svg";
+import sendIconWhite from "../../assets/imgs/send-white.svg";
 import { useEffect, useState } from "react";
 
 function Chat() {
@@ -14,6 +16,8 @@ function Chat() {
     const [userMessage, setUserMessage] = useState("");
 
     const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false);
+
+    const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
 
@@ -25,6 +29,14 @@ function Chat() {
 
         // Executada toda vez que a tela abre.
         getChats();
+
+        // Verifica se o modo escuro está ativado
+        let modoEscuro = localStorage.getItem("darkMode");
+        if (modoEscuro === "true") {
+            setDarkMode(true);
+            document.body.classList.add("dark-mode");
+        }
+
     }, []);
 
     useEffect(() => {
@@ -62,7 +74,7 @@ function Chat() {
 
     const clickChat = (chat) => {
         setChatSelecionado(chat);
-        toggleLeftPanel();
+        setIsLeftPanelOpen(false);
     }
 
     const chatGPT = async (message) => {
@@ -219,13 +231,28 @@ function Chat() {
         setIsLeftPanelOpen(!isLeftPanelOpen);
     }
 
+    const toggleDarkMode = () => {
+
+        setDarkMode(!darkMode);
+
+        if (darkMode) {
+            document.body.classList.remove("dark-mode");
+        }
+        else {
+            document.body.classList.add("dark-mode");
+        }
+
+        localStorage.setItem("darkMode", !darkMode);
+
+    }
+
     return (
         <>
             <div className="container">
                 {/* Toggle Button */}
                 <button
                     className="btn-toggle-panel"
-                    onClick={() => setIsLeftPanelOpen(true)}
+                    onClick={() => setIsLeftPanelOpen(!isLeftPanelOpen)} // Inverte o valor
                 >
                     ☰
                 </button>
@@ -234,7 +261,7 @@ function Chat() {
                         <button className="btn-new-chat" onClick={() => novoChat()}>+ New chat</button>
                         {chats.map(chat => (
                             <button key={chat.id} className="btn-chat" onClick={() => clickChat(chat)}>
-                                <img src={chatIcon} alt="ícone de chat." />
+                                <img src={darkMode? chatIconWhite : chatIcon} alt="ícone de chat." />
                                 {chat.chatTitle}
                             </button>
                         ))}
@@ -243,7 +270,7 @@ function Chat() {
                         {chatSelecionado != null && (
                             <button className="btn-chat" onClick={() => deletarChat()}>Delete current chat: {chatSelecionado.chatTitle}</button>
                         )}
-                        {/* <button className="btn-chat">Light mode</button> */}
+                        <button className="btn-chat" onClick={() => toggleDarkMode()}>Light mode</button>
                         {/* <button className="btn-chat">My account</button> */}
                         {/* <button className="btn-chat">Updates & FAQ</button> */}
                         <button className="btn-chat" onClick={onLogOutClick}>Log out</button>
@@ -253,13 +280,13 @@ function Chat() {
                     {chatSelecionado == null ? (
                         <>
                             <div className="chat-logo">
-                                <img src={logo} alt="Logo do SenaiGPT." />
+                                <img src={darkMode? logoWhite : logo} alt="Logo do SenaiGPT." />
                             </div>
                             <div className="dicas-container">
                                 {[...Array(3)].map((_, i) => (
                                     <div key={i} className="dicas-item">
                                         <h2>
-                                            <img src={example} alt="Example icon." />
+                                            <img src={darkMode? exampleWhite : example} alt="Example icon." />
                                             Examples
                                         </h2>
                                         <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>Explique como um computador quântico funciona.</p>
@@ -292,7 +319,7 @@ function Chat() {
                             placeholder="Type a message."
                             type="text"
                         />
-                        <img onClick={() => enviarMensagem(userMessage)} src={sendIcon} alt="Send." />
+                        <img onClick={() => enviarMensagem(userMessage)} src={darkMode? sendIconWhite : sendIcon} alt="Send." />
                     </div>
                 </main>
             </div>
