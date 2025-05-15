@@ -1,15 +1,3 @@
-/* .titulo {
-
-    font-size: 76px;
-
-} */
-
-/* #meutitulo {
-
-    font-size: 76px;
-
-} */
-
 .page-container {
 
     display: flex;
@@ -28,9 +16,9 @@ h1 {
 .new-user-container {
 
     display: flex;
-    flex-direction: column; /*deixa em colunas*/
-    align-items: center; /*horizontal*/
-    justify-content: center; /*horizontal*/
+    flex-direction: column; /* deixa o flex em colunas */
+    align-items: center; /* centraliza horizontalmente */
+    justify-content: center; /* centraliza verticalmente */
     height: 100vh;
     width: 50vw;
 
@@ -47,7 +35,6 @@ h1 {
     background-image: url(/src/assets/imgs/up.jpg);
     background-size: 175%;
     background-position: 0% 81%;
-    /* background-repeat: no-repeat; */
     width: 50vw;
     height: 100vh;
 
