@@ -36,7 +36,7 @@ function NewUser() {
             return;
         }
 
-        let response = await fetch ("https://senai-gpt-api.up.railway.app/users", {
+        let response = await fetch ("https://senai-gpt-api.azurewebsites.net/users", {
 
             headers: {
                 "Content-Type": "application/json"

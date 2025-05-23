@@ -12,7 +12,7 @@ import sendIconWhite from "../../assets/imgs/send-white.svg";
 // Hooks e bibliotecas
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage } from "@fortawesome/free-regular-svg-icons/faMessage";
+import { faMessage } from "@fortawesome/free-regular-svg-icons";
 
 // Componente principal do chat
 function Chat() {
@@ -46,7 +46,7 @@ function Chat() {
 
     // Busca os chats do back-end e filtra por ID do usuário logado
     const getChats = async () => {
-        let response = await fetch("https://senai-gpt-api.up.railway.app/chats", {
+        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("meuToken")
             }
@@ -116,7 +116,7 @@ function Chat() {
         setChatSelecionado({ ...novoChatSelecionado });
 
         // Atualiza o chat no back-end
-        await fetch(`https://senai-gpt-api.up.railway.app/chats/${chatAtual.id}`, {
+        await fetch(`https://senai-gpt-api.azurewebsites.net/chats/${chatAtual.id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -150,7 +150,7 @@ function Chat() {
         setChatSelecionado(novoChatObj);
         setUserMessage("");
 
-        let response = await fetch("https://senai-gpt-api.up.railway.app/chats", {
+        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -173,7 +173,7 @@ function Chat() {
         toggleLeftPanel();
 
         if (confirmacao) {
-            let response = await fetch(`https://senai-gpt-api.up.railway.app/chats/${chatSelecionado.id}`, {
+            let response = await fetch(`https://senai-gpt-api.azurewebsites.net/chats/${chatSelecionado.id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("meuToken")

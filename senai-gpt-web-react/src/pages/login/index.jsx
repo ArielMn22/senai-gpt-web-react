@@ -9,7 +9,7 @@ function Login() {
 
     const onLoginClick = async () => {
 
-        let response = await fetch ("https://senai-gpt-api.up.railway.app/login", {
+        let response = await fetch ("https://senai-gpt-api.azurewebsites.net/login", {
 
             headers: {
                 "Content-Type": "application/json"
