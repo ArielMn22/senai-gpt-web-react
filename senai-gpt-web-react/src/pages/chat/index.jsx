@@ -1,305 +1,273 @@
-// Importação de estilos e imagens
 import "./chat.css";
 import logo from "../../assets/imgs/Chat.png";
 import logoWhite from "../../assets/imgs/ChatWhite.png";
 import example from "../../assets/imgs/example.svg";
 import exampleWhite from "../../assets/imgs/example-white.svg";
-import chatIcon from "../../assets/imgs/chat.svg";
-import chatIconWhite from "../../assets/imgs/chat-white.svg";
 import sendIcon from "../../assets/imgs/send.svg";
 import sendIconWhite from "../../assets/imgs/send-white.svg";
 
-// Hooks e bibliotecas
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage } from "@fortawesome/free-regular-svg-icons";
 
-// Componente principal do chat
 function Chat() {
+    const [chats, setChats] = useState([]);
+    const [chatSelecionado, setChatSelecionado] = useState(null);
+    const [mensagens, setMensagens] = useState([]);
+    const [userMessage, setUserMessage] = useState("");
+    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
-    // Estados do componente
-    const [chats, setChats] = useState([]); // Lista de chats disponíveis
-    const [chatSelecionado, setChatSelecionado] = useState(null); // Chat em foco
-    const [userMessage, setUserMessage] = useState(""); // Mensagem digitada pelo usuário
-
-    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false); // Controle da visibilidade do painel esquerdo
-    const [darkMode, setDarkMode] = useState(false); // Controle do modo escuro
-
-    // Carregamento inicial: rascunho, chats e modo escuro
     useEffect(() => {
-        let rascunhoMensagem = localStorage.getItem("rascunhoMensagem");
-        if (rascunhoMensagem) setUserMessage(rascunhoMensagem);
+        const rascunho = localStorage.getItem("rascunhoMensagem");
+        if (rascunho) setUserMessage(rascunho);
 
-        getChats(); // Busca os chats do usuário
+        getChats();
 
-        let modoEscuro = localStorage.getItem("darkMode");
+        const modoEscuro = localStorage.getItem("darkMode");
         if (modoEscuro === "true") {
             setDarkMode(true);
             document.body.classList.add("dark-mode");
         }
     }, []);
 
-    // Salva a mensagem digitada no localStorage como rascunho
     useEffect(() => {
         localStorage.setItem("rascunhoMensagem", userMessage);
     }, [userMessage]);
 
-    // Busca os chats do back-end e filtra por ID do usuário logado
     const getChats = async () => {
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("meuToken")
-            }
+        const res = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
+             }
         });
-
-        if (response.ok) {
-            let json = await response.json();
-            let userId = localStorage.getItem("meuId");
-            json = json.filter(chat => chat.userId == userId);
-            setChats(json);
-        } else if (response.status === 401) {
-            alert("Token inválido. Faça login novamente.");
-            localStorage.clear();
-            window.location.href = "/login";
-        }
+        const json = await res.json();
+        const userId = localStorage.getItem("meuId");
+        setChats(json.filter(chat => chat.userId === userId));
     };
 
-    // Função para deslogar o usuário
-    const onLogOutClick = () => {
-        localStorage.clear();
-        window.location.href = "/login";
+    const getMensagens = async (chatId) => {
+        const res = await fetch(`https://senai-gpt-api.azurewebsites.net/messages?chatId=${chatId}`, {
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
+             }
+        });
+        const json = await res.json();
+        setMensagens(json);
     };
 
-    // Seleciona um chat da lista
-    const clickChat = (chat) => {
+    const clickChat = async (chat) => {
         setChatSelecionado(chat);
         setIsLeftPanelOpen(false);
+        await getMensagens(chat.id);
     };
 
-    // Simulação de chamada ao ChatGPT (resposta fixa por segurança)
-    const chatGPT = async (message) => {
+    const chatGPT = async (msg) => {
         return "[Mensagem fixa]";
-        // ... código original de integração com a API do Azure OpenAI
     };
 
-    // Função para envio de mensagem
-    const enviarMensagem = async (message) => {
-        let chatAtual = { ...chatSelecionado };
+    const enviarMensagem = async (msg) => {
+        if (!msg.trim()) return;
+
+        let chatAtual = chatSelecionado;
 
         if (!chatSelecionado) {
             chatAtual = await novoChat();
         }
 
-        let userId = localStorage.getItem("meuId");
+        const userId = localStorage.getItem("meuId");
 
-        let novaMensagemUsuario = {
-            userId: crypto.randomUUID(),
-            text: message,
-            id: userId
+        const novaMsgUsuario = {
+            chatId: chatAtual.id,
+            userId,
+            text: msg,
+            id: crypto.randomUUID()
         };
 
-        // Adiciona a mensagem do usuário ao chat
-        let novoChatSelecionado = { ...chatAtual };
-        novoChatSelecionado.messages.push(novaMensagemUsuario);
-        setChatSelecionado(novoChatSelecionado);
-
-        // Resposta do "ChatGPT"
-        let resposta = await chatGPT(message);
-
-        let novaRespostaChatGPT = {
+        const resposta = await chatGPT(msg);
+        const novaMsgBot = {
+            chatId: chatAtual.id,
             userId: "chatbot",
             text: resposta,
             id: crypto.randomUUID()
         };
 
-        novoChatSelecionado.messages.push(novaRespostaChatGPT);
-        setChatSelecionado({ ...novoChatSelecionado });
-
-        // Atualiza o chat no back-end
-        await fetch(`https://senai-gpt-api.azurewebsites.net/chats/${chatAtual.id}`, {
-            method: "PUT",
-            headers: {
+        await fetch("https://senai-gpt-api.azurewebsites.net/messages", {
+            method: "POST",
+            headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("meuToken")
-            },
-            body: JSON.stringify(novoChatSelecionado)
+                "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
+             },
+            body: JSON.stringify(novaMsgUsuario)
+        });
+
+        await fetch("https://senai-gpt-api.azurewebsites.net/messages", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
+             },
+            body: JSON.stringify(novaMsgBot)
         });
 
         setUserMessage("");
-        await getChats(); // Atualiza a lista lateral
+        await getMensagens(chatAtual.id);
+        await getChats();
     };
 
-    // Cria um novo chat
     const novoChat = async () => {
-        let nomeChat = prompt("Digite o nome do novo chat:");
-        if (!nomeChat) {
+        const nome = prompt("Digite o nome do novo chat:");
+        if (!nome) {
             alert("Nome inválido.");
             return;
         }
 
-        setIsLeftPanelOpen(false);
-
-        let userId = localStorage.getItem("meuId");
-        let novoChatObj = {
-            id: crypto.randomUUID(),
-            chatTitle: nomeChat,
-            messages: [],
+        const userId = localStorage.getItem("meuId");
+        const novo = {
+            chatTitle: nome,
             userId
         };
 
-        setChatSelecionado(novoChatObj);
-        setUserMessage("");
-
-        let response = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
+        const res = await fetch("https://senai-gpt-api.azurewebsites.net/chats", {
             method: "POST",
-            headers: {
+            headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("meuToken")
+                "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
             },
-            body: JSON.stringify(novoChatObj)
+            body: JSON.stringify(novo)
         });
 
-        if (response.ok) {
-            await getChats();
-            return novoChatObj;
-        } else {
-            console.log("Erro ao criar o chat.");
-        }
+        const chatCriado = await res.json();
+        setChatSelecionado(chatCriado);
+        setMensagens([]);
+        setUserMessage("");
+        await getChats();
+        return chatCriado;
     };
 
-    // Deleta o chat selecionado
     const deletarChat = async () => {
-        let confirmacao = window.confirm("Você tem certeza que deseja deletar este chat?");
-        toggleLeftPanel();
+        const confirmacao = window.confirm("Você tem certeza que deseja deletar este chat?");
+        if (!confirmacao || !chatSelecionado) return;
 
-        if (confirmacao) {
-            let response = await fetch(`https://senai-gpt-api.azurewebsites.net/chats/${chatSelecionado.id}`, {
+        await fetch(`https://senai-gpt-api.azurewebsites.net/chats/${chatSelecionado.id}`, {
+            method: "DELETE",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
+            }
+        });
+
+        const res = await fetch(`https://senai-gpt-api.azurewebsites.net/messages?chatId=${chatSelecionado.id}`, {
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
+            }
+        });
+        const msgs = await res.json();
+
+        for (const msg of msgs) {
+            await fetch(`https://senai-gpt-api.azurewebsites.net/messages/${msg.id}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("meuToken")
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("meuToken")}`
                 }
             });
-
-            if (response.ok) {
-                setChatSelecionado(null);
-                await getChats();
-            } else {
-                alert("Erro ao deletar o chat.");
-            }
         }
+
+        setChatSelecionado(null);
+        setMensagens([]);
+        await getChats();
     };
 
-    // Alterna visibilidade do painel lateral
-    const toggleLeftPanel = () => {
-        setIsLeftPanelOpen(!isLeftPanelOpen);
-    };
+    const toggleLeftPanel = () => setIsLeftPanelOpen(!isLeftPanelOpen);
 
-    // Alterna entre modo claro e escuro
     const toggleDarkMode = () => {
         setDarkMode(!darkMode);
-
-        if (darkMode) {
-            document.body.classList.remove("dark-mode");
-        } else {
-            document.body.classList.add("dark-mode");
-        }
-
-        localStorage.setItem("darkMode", !darkMode);
+        document.body.classList.toggle("dark-mode", !darkMode);
+        localStorage.setItem("darkMode", String(!darkMode));
     };
 
-    // Renderização da interface
+    const onLogOutClick = () => {
+        localStorage.clear();
+        window.location.href = "/login";
+    };
+
     return (
-        <>
-            <div className="container">
-                {/* Botão para abrir/fechar painel esquerdo */}
-                <button className="btn-toggle-panel" onClick={toggleLeftPanel}>☰</button>
+        <div className="container">
+            <button className="btn-toggle-panel" onClick={toggleLeftPanel}>☰</button>
 
-                {/* Painel esquerdo com lista de chats */}
-                <header className={`left-panel ${isLeftPanelOpen ? "open" : ""}`}>
-                    <div className="top">
-                        <button className="btn-new-chat" onClick={novoChat}>+ New chat</button>
-                        {chats.map(chat => (
-                            <button key={chat.id} className="btn-chat" onClick={() => clickChat(chat)}>
-                                <FontAwesomeIcon icon={faMessage} className="icon" />
-                                {chat.chatTitle}
-                            </button>
-                        ))}
-                    </div>
-                    <div className="bottom">
-                        {chatSelecionado && (
-                            <button className="btn-chat" onClick={deletarChat}>
-                                Delete current chat: {chatSelecionado.chatTitle}
-                            </button>
-                        )}
-                        <button className="btn-chat" onClick={toggleDarkMode}>Light mode</button>
-                        <button className="btn-chat" onClick={onLogOutClick}>Log out</button>
-                    </div>
-                </header>
-
-                {/* Painel principal com a interface do chat */}
-                <main className="central-panel">
-
-                    {/* Tela inicial com logo e exemplos */}
-                    {chatSelecionado == null ? (
-                        <>
-                            <div className="chat-logo">
-                                <img src={darkMode ? logoWhite : logo} alt="Logo do SenaiGPT." />
-                            </div>
-
-                            <div className="dicas-container">
-                                {[...Array(3)].map((_, i) => (
-                                    <div key={i} className="dicas-item">
-                                        <h2>
-                                            <img src={darkMode ? exampleWhite : example} alt="Example icon." />
-                                            Examples
-                                        </h2>
-                                        <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>
-                                            Explique como um computador quântico funciona.
-                                        </p>
-                                        <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>
-                                            Explique como um computador quântico funciona.
-                                        </p>
-                                        <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>
-                                            Explique como um computador quântico funciona.
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div className="chat-container">
-                                <div className="chat-header">
-                                    <h2>{chatSelecionado.chatTitle}</h2>
-                                </div>
-                                <div className="chat-messages">
-                                    {chatSelecionado.messages.map(message => (
-                                        <p key={message.id} className={`message-item ${message.userId === "chatbot" ? "chatbot" : ""}`}>
-                                            {message.text}
-                                        </p>
-                                    ))}
-                                </div>
-                            </div>
-                        </>
+            <header className={`left-panel ${isLeftPanelOpen ? "open" : ""}`}>
+                <div className="top">
+                    <button className="btn-new-chat" onClick={novoChat}>+ New chat</button>
+                    {chats.map(chat => (
+                        <button key={chat.id} className="btn-chat" onClick={() => clickChat(chat)}>
+                            {chat.chatTitle}
+                        </button>
+                    ))}
+                </div>
+                <div className="bottom">
+                    {chatSelecionado && (
+                        <button className="btn-chat" onClick={deletarChat}>
+                            Delete current chat: {chatSelecionado.chatTitle}
+                        </button>
                     )}
+                    <button className="btn-chat" onClick={toggleDarkMode}>Light mode</button>
+                    <button className="btn-chat" onClick={onLogOutClick}>Log out</button>
+                </div>
+            </header>
 
-                    {/* Campo de digitação e envio de mensagens */}
-                    <div className="input-container-1">
-                        <input
-                            value={userMessage}
-                            onChange={event => setUserMessage(event.target.value)}
-                            placeholder="Type a message."
-                            type="text"
-                        />
-                        <img
-                            onClick={() => enviarMensagem(userMessage)}
-                            src={darkMode ? sendIconWhite : sendIcon}
-                            alt="Send."
-                        />
+            <main className="central-panel">
+                {!chatSelecionado ? (
+                    <>
+                        <div className="chat-logo">
+                            <img src={darkMode ? logoWhite : logo} alt="Logo do SenaiGPT." />
+                        </div>
+
+                        <div className="dicas-container">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="dicas-item">
+                                    <h2>
+                                        <img src={darkMode ? exampleWhite : example} alt="Example icon." />
+                                        Examples
+                                    </h2>
+                                    <p onClick={() => setUserMessage("Explique como um computador quântico funciona.")}>
+                                        Explique como um computador quântico funciona.
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <div className="chat-container">
+                        <div className="chat-header">
+                            <h2>{chatSelecionado.chatTitle}</h2>
+                        </div>
+                        <div className="chat-messages">
+                            {mensagens.map(msg => (
+                                <p key={msg.id} className={`message-item ${msg.userId === "chatbot" ? "chatbot" : ""}`}>
+                                    {msg.text}
+                                </p>
+                            ))}
+                        </div>
                     </div>
-                </main>
-            </div>
-        </>
+                )}
+
+                <div className="input-container-1">
+                    <input
+                        value={userMessage}
+                        onChange={e => setUserMessage(e.target.value)}
+                        placeholder="Type a message."
+                        type="text"
+                    />
+                    <img
+                        onClick={() => enviarMensagem(userMessage)}
+                        src={darkMode ? sendIconWhite : sendIcon}
+                        alt="Send"
+                    />
+                </div>
+            </main>
+        </div>
     );
 }
 
